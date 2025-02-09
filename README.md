@@ -66,6 +66,10 @@ CrossSysInfo/
 ---
 
 ## 빌드 및 실행 방법
+
+### ! 일러두기
+- CPU 정보 조회에서 사용량 같은 경우에는 `std::string systemInfo = client.getSystemInfo();`으로 한번에 조회하는 것보다, `std::string cpuInfo = client.getCPUInfo();` 개별 함수로 보는게 더 정확합니다.
+
 ### Linux
 #### 빌드
 ```sh

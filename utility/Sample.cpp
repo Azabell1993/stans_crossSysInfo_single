@@ -11,8 +11,6 @@ int main() {
     spdlog::info("Fetching system info...");
     spdlog::info("System info displayed successfully.");
 
-    
-    
     std::string cpuInfo = client.getCPUInfo();
     std::string memoryInfo = client.getMemoryInfo();
     std::string diskInfo = client.getDiskInfo();
@@ -28,14 +26,6 @@ int main() {
     spdlog::info("Fetching Disk info...");
     fmt::print("Disk Info: {}\n", diskInfo);
     spdlog::info("Disk info displayed successfully.");
-    
-    /*
-        또는
-        std::string getCPUInfo();
-        std::string getMemoryInfo();
-        std::string getDiskInfo();
-        로 개별 출력 가능
-    */
-    
+
     return 0;
 }
