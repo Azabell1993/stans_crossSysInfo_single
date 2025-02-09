@@ -161,18 +161,39 @@ std::string EdgeClient::getMemoryInfo() {
     // freeram: 사용 가능한 메모리 크기
     // 사용된 메모리 = (총 메모리 - 사용 가능한 메모리) * 단위 크기(mem_unit)
 #elif __APPLE__
+    /**
+     * macOS에서는 시스템 메모리 정보를 가져오기 위해 두 가지 주요 방법을 사용한다.
+     * 1. `sysctlbyname("hw.memsize")`: 전체 물리 메모리 크기 조회
+     * 2. `host_statistics64()`: 가상 메모리 사용량 통계 조회
+     *
+     * `sysctlbyname`을 사용하여 전체 메모리 크기를 가져오고,
+     * `host_statistics64`를 통해 실제 사용된 메모리를 계산한다.
+     *
+     * 참고 코드: https://github.com/MohamedElashri/free-mac/blob/ca042b29b720913aa771794de785a803b093403f/free.c#L182-L189
+     */
+    
     int64_t memSize;
     size_t memSizeLen = sizeof(memSize);
     sysctlbyname("hw.memsize", &memSize, &memSizeLen, NULL, 0);
     totalMemory = memSize;
-    // macOS는 전체 메모리 크기만 제공하며, 사용된 메모리는 별도로 계산해야 함
+    // macOS는 전체 물리 메모리 크기만 제공하며, 사용된 메모리는 별도로 계산해야 한다.
 
     vm_statistics64_data_t vmStat;
     mach_msg_type_number_t count = sizeof(vmStat) / sizeof(integer_t);
 
     vm_size_t pageSize;
     host_page_size(mach_host_self(), &pageSize);
-
+    // host_page_size()를 사용하여 페이지 크기를 가져온다.
+    
+    /**
+     * host_statistics64() 호출:
+     * - 성공 시 KERN_SUCCESS 반환
+     * - 실패 시 오류 메시지를 출력하고, 사용된 메모리 값을 설정하지 않음
+     *
+     * 실패할 수 있는 원인:
+     * - 권한 부족 (예: 샌드박스 환경에서 실행될 경우)
+     * - Mach 커널과의 통신 문제 발생
+     */
     if (host_statistics64(mach_host_self(), HOST_VM_INFO64, (host_info_t)&vmStat, &count) != KERN_SUCCESS) {
         std::cerr << "Error: host_statistics64() failed to retrieve memory info." << std::endl;
     } else {
@@ -180,23 +201,23 @@ std::string EdgeClient::getMemoryInfo() {
          * macOS에서는 단순한 free memory 외에도 wired, active, inactive memory를 사용된 메모리로 간주해야 한다.
          *
          * 1. Active Memory (활성 메모리)
-         *    - vmStat.active_count
-         *    - 현재 실행 중이거나, 자주 액세스되는 데이터가 저장된 페이지.
-         *    - 운영체제에서 가장 자주 사용되는 페이지들이 포함되며, 필요하면 빠르게 접근할 수 있음.
+         *    - `vmStat.active_count`
+         *    - 현재 실행 중이거나, 자주 액세스되는 데이터가 저장된 페이지
+         *    - 운영체제에서 가장 자주 사용되는 페이지들이 포함되며, 필요하면 빠르게 접근 가능
          *
          * 2. Inactive Memory (비활성 메모리)
-         *    - vmStat.inactive_count
-         *    - 한 번 사용되었지만 현재는 사용되지 않는 페이지.
-         *    - 즉, 프로세스가 사용했던 메모리인데, 현재는 직접적으로 사용되지 않고 캐시처럼 보관됨.
-         *    - 다른 프로세스가 필요하면 다시 사용되거나, 새로운 데이터에 의해 덮어씌워질 수 있음.
+         *    - `vmStat.inactive_count`
+         *    - 한 번 사용되었지만 현재는 직접적으로 사용되지 않는 페이지 (캐시 개념)
+         *    - 다른 프로세스가 필요하면 다시 사용되거나 새로운 데이터로 덮어씌워질 수 있음
          *
          * 3. Wired Memory (고정 메모리)
-         *    - vmStat.wire_count
-         *    - 운영 체제에서 반드시 유지해야 하는 페이지.
-         *    - 이 메모리는 페이지 아웃(스왑)이 불가능하며, 커널이 중요한 작업을 수행하는 데 필요함.
-         *    - 장치 드라이버, 커널 공간의 중요한 구조체 등이 여기에 포함됨.
+         *    - `vmStat.wire_count`
+         *    - 운영 체제에서 반드시 유지해야 하는 페이지
+         *    - 이 메모리는 페이지 아웃(스왑)이 불가능하며, 커널이 중요한 작업을 수행하는 데 필요
+         *    - 장치 드라이버, 커널 공간의 중요한 구조체 등이 포함됨
          *
-         * 사용된 메모리는 (active_count + inactive_count + wire_count) * pageSize 로 계산됨.
+         * 사용된 메모리는 다음과 같이 계산됨:
+         * usedMemory = (active_count + inactive_count + wire_count) * pageSize
          */
         usedMemory = (vmStat.active_count + vmStat.inactive_count + vmStat.wire_count) * pageSize;
     }
