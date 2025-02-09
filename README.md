@@ -16,7 +16,6 @@ CrossSysInfo는 Windows와 Linux를 지원하는 크로스플랫폼 시스템 �
 - **Windows:**
   - **코어 수 및 모델명:** `GetSystemInfo` 함수를 사용하여 `SYSTEM_INFO` 구조체를 채워 코어 수를 확인합니다.
   - **CPU 사용량:** `GetSystemTimes` 함수를 사용하여 시스템의 유휴 시간(`idleTime`), 커널 시간(`kernelTime`), 사용자 시간(`userTime`)을 가져와 이전 값과 비교하여 사용량을 계산합니다.
-  - 
 - **Linux:**
   - **모델명 및 코어 수:** `/proc/cpuinfo` 파일을 읽어 `model name`과 `processor` 항목을 파싱하여 모델명과 코어 수를 얻습니다.
   - **CPU 사용량:** `/proc/stat` 파일에서 CPU 시간 정보를 읽어와 일정 시간 간격 후의 값과 비교하여 사용량을 계산합니다.
@@ -30,10 +29,8 @@ CrossSysInfo는 Windows와 Linux를 지원하는 크로스플랫폼 시스템 �
 
 - **Windows:**
   - `GlobalMemoryStatusEx` 함수를 사용하여 `MEMORYSTATUSEX` 구조체를 채워 총 물리 메모리(`ullTotalPhys`)와 사용 가능한 메모리(`ullAvailPhys`)를 얻습니다.
-
 - **Linux:**
   - `sysinfo` 함수를 사용하여 `sysinfo` 구조체의 `totalram`과 `freeram` 값을 통해 총 메모리와 사용된 메모리를 계산합니다.
-
 - **macOS:**
   - `sysctlbyname` 함수를 사용하여 `hw.memsize` 값을 통해 총 메모리를 얻습니다.
   - `host_statistics64` 함수를 사용하여 `vm_statistics64_data_t` 구조체의 `active_count`, `inactive_count`, `wire_count` 값을 통해 사용된 메모리를 계산합니다.
@@ -42,7 +39,6 @@ CrossSysInfo는 Windows와 Linux를 지원하는 크로스플랫폼 시스템 �
 
 - **Windows:**
   - `GetDiskFreeSpaceEx` 함수를 사용하여 드라이브의 총 용량(`totalBytes.QuadPart`)과 사용 가능한 용량(`freeBytes.QuadPart`)을 얻습니다.
-
 - **Linux 및 macOS:**
   - `statvfs` 함수를 사용하여 파일 시스템의 총 블록 수(`f_blocks`)와 사용 가능한 블록 수(`f_bavail`), 그리고 각 블록의 크기(`f_frsize`)를 통해 디스크 정보를 계산합니다.
 
