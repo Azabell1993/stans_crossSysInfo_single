@@ -8,6 +8,46 @@ CrossSysInfo는 Windows와 Linux를 지원하는 크로스플랫폼 시스템 �
 - `Linux`
 - `MacOS`
 
+## 로직 요약 설명
+주어진 `EdgeClient` 클래스는 Windows, Linux, macOS에서 시스템 정보를 수집하여 JSON 형식으로 반환하는 기능을 제공합니다. 각 운영체제별로 CPU, 메모리, 디스크 정보를 수집하는 방법은 다음과 같습니다.
+
+**1. CPU 정보 수집 (`getCPUInfo` 함수):**
+
+- **Windows:**
+  - **코어 수 및 모델명:** `GetSystemInfo` 함수를 사용하여 `SYSTEM_INFO` 구조체를 채워 코어 수를 확인합니다. citeturn0search0
+  - **CPU 사용량:** `GetSystemTimes` 함수를 사용하여 시스템의 유휴 시간(`idleTime`), 커널 시간(`kernelTime`), 사용자 시간(`userTime`)을 가져와 이전 값과 비교하여 사용량을 계산합니다. citeturn0search8
+
+- **Linux:**
+  - **모델명 및 코어 수:** `/proc/cpuinfo` 파일을 읽어 `model name`과 `processor` 항목을 파싱하여 모델명과 코어 수를 얻습니다.
+  - **CPU 사용량:** `/proc/stat` 파일에서 CPU 시간 정보를 읽어와 일정 시간 간격 후의 값과 비교하여 사용량을 계산합니다.
+
+- **macOS:**
+  - **모델명:** `sysctlbyname` 함수를 사용하여 `machdep.cpu.brand_string` 값을 가져옵니다.
+  - **코어 수:** `sysctlbyname` 함수를 사용하여 `hw.logicalcpu` 값을 가져옵니다.
+  - **CPU 사용량:** `host_statistics` 함수를 사용하여 `host_cpu_load_info_data_t` 구조체의 값을 통해 사용량을 계산합니다.
+
+**2. 메모리 정보 수집 (`getMemoryInfo` 함수):**
+
+- **Windows:**
+  - `GlobalMemoryStatusEx` 함수를 사용하여 `MEMORYSTATUSEX` 구조체를 채워 총 물리 메모리(`ullTotalPhys`)와 사용 가능한 메모리(`ullAvailPhys`)를 얻습니다.
+
+- **Linux:**
+  - `sysinfo` 함수를 사용하여 `sysinfo` 구조체의 `totalram`과 `freeram` 값을 통해 총 메모리와 사용된 메모리를 계산합니다.
+
+- **macOS:**
+  - `sysctlbyname` 함수를 사용하여 `hw.memsize` 값을 통해 총 메모리를 얻습니다.
+  - `host_statistics64` 함수를 사용하여 `vm_statistics64_data_t` 구조체의 `active_count`, `inactive_count`, `wire_count` 값을 통해 사용된 메모리를 계산합니다.
+
+**3. 디스크 정보 수집 (`getDiskInfo` 함수):**
+
+- **Windows:**
+  - `GetDiskFreeSpaceEx` 함수를 사용하여 드라이브의 총 용량(`totalBytes.QuadPart`)과 사용 가능한 용량(`freeBytes.QuadPart`)을 얻습니다.
+
+- **Linux 및 macOS:**
+  - `statvfs` 함수를 사용하여 파일 시스템의 총 블록 수(`f_blocks`)와 사용 가능한 블록 수(`f_bavail`), 그리고 각 블록의 크기(`f_frsize`)를 통해 디스크 정보를 계산합니다.
+
+이와 같은 방식으로 각 운영체제에서 제공하는 API와 시스템 파일을 활용하여 CPU, 메모리, 디스크 정보를 수집하고 있습니다. 
+
 ## 기능
 - CPU 모델, 코어 개수, 사용량 수집
 - 총 메모리 및 사용 중인 메모리 정보 수집
