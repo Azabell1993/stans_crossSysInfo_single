@@ -87,20 +87,19 @@ cd linux_result/output/
 ```
 #### 출력
 ```
-azabell@DESKTOP-BNUTRL1:/mnt/c/Users/jeewo/Desktop/crossSysInfo/utils/linux_result/output$ ./Sample
-[2025-02-09 20:06:19.855] [info] Fetching system info...
-System Info: {"CPU": {"Model": "AMD Ryzen 5 7530U with Radeon Graphics", "Cores": 12, "Usage": 0}, "Memory": {"Total": 8014446592, "Used": 2137264128}"Disk": {"/": {"Total": 1081101176832, "Available": 1017010257920}, "/home": {"Total": 1081101176832, "Available": 1017010257920}, "/var": {"Total": 1081101176832, "Available": 1017010257920}, "/tmp": {"Total": 1081101176832, "Available": 1017010257920}}}
-[2025-02-09 20:06:19.855] [info] Fetching system info...
-[2025-02-09 20:06:19.855] [info] System info displayed successfully.
-[2025-02-09 20:06:20.356] [info] Fetching CPU info...
+azabell@DESKTOP-BNUTRL1:/mnt/c/Users/jeewo/Desktop/crossSysInfo/utils/linux_result/output$ ./Sample 
+[2025-02-09 20:29:14.891] [info] Fetching system info...
+System Info: {"CPU": {"Model": "AMD Ryzen 5 7530U with Radeon Graphics", "Cores": 12, "Usage": 0}, "Memory": {"Total": 8014446592, "Used": 2146643968}"Disk": {"/": {"Total": 1081101176832, "Available": 1017010249728}, "/home": {"Total": 1081101176832, "Available": 1017010249728}, "/var": {"Total": 1081101176832, "Available": 1017010249728}, "/tmp": {"Total": 1081101176832, "Available": 1017010249728}}}
+[2025-02-09 20:29:15.392] [info] System info displayed successfully.
+[2025-02-09 20:29:15.392] [info] Fetching CPU info...
 CPU Info: "Model": "AMD Ryzen 5 7530U with Radeon Graphics", "Cores": 12, "Usage": 0.332779
-[2025-02-09 20:06:20.356] [info] CPU info displayed successfully.
-[2025-02-09 20:06:20.356] [info] Fetching memory info...
-Memory Info: "Total": 8014446592, "Used": 2137464832
-[2025-02-09 20:06:20.356] [info] Memory info displayed successfully.
-[2025-02-09 20:06:20.356] [info] Fetching Disk info...
-Disk Info: {"/": {"Total": 1081101176832, "Available": 1017010257920}, "/home": {"Total": 1081101176832, "Available": 1017010257920}, "/var": {"Total": 1081101176832, "Available": 1017010257920}, "/tmp": {"Total": 1081101176832, "Available": 1017010257920}}
-[2025-02-09 20:06:20.356] [info] Disk info displayed successfully.
+[2025-02-09 20:29:15.893] [info] CPU info displayed successfully.
+[2025-02-09 20:29:15.893] [info] Fetching memory info...
+Memory Info: "Total": 8014446592, "Used": 2146643968
+[2025-02-09 20:29:15.893] [info] Memory info displayed successfully.
+[2025-02-09 20:29:15.893] [info] Fetching Disk info...
+Disk Info: {"/": {"Total": 1081101176832, "Available": 1017010249728}, "/home": {"Total": 1081101176832, "Available": 1017010249728}, "/var": {"Total": 1081101176832, "Available": 1017010249728}, "/tmp": {"Total": 1081101176832, "Available": 1017010249728}}
+[2025-02-09 20:29:15.893] [info] Disk info displayed successfully.
 ```
 
 ----
@@ -162,19 +161,18 @@ cd window_result/output/
 #### 출력
 ```
 PS C:\Users\jeewo\Desktop\crossSysInfo\utils\window_result\output> .\Sample.exe
-[2025-02-09 20:05:18.507] [info] Fetching system info...
-System Info: {"CPU": {"Model": "Windows CPU", "Cores": 12, "Usage": -nan(ind)}, "Memory": {"Total": 16539570176, "Used": 10390339584}"Disk": {"C:\": {"Total": 511176601600, "Available": 349924515840}, "D:\": {"Total": 0, "Available": 0}}}
-[2025-02-09 20:05:18.509] [info] Fetching system info...
-[2025-02-09 20:05:18.509] [info] System info displayed successfully.
-[2025-02-09 20:05:18.509] [info] Fetching CPU info...
-CPU Info: "Model": "Windows CPU", "Cores": 12, "Usage": 16.6667
-[2025-02-09 20:05:18.510] [info] CPU info displayed successfully.
-[2025-02-09 20:05:18.510] [info] Fetching memory info...
-Memory Info: "Total": 16539570176, "Used": 10390392832
-[2025-02-09 20:05:18.511] [info] Memory info displayed successfully.
-[2025-02-09 20:05:18.511] [info] Fetching Disk info...
-Disk Info: {"C:\": {"Total": 511176601600, "Available": 349924515840}, "D:\": {"Total": 0, "Available": 0}}
-[2025-02-09 20:05:18.511] [info] Disk info displayed successfully.
+[2025-02-09 20:29:49.206] [info] Fetching system info...
+System Info: {"CPU": {"Model": "Windows CPU", "Cores": 12, "Usage": -nan(ind)}, "Memory": {"Total": 16539570176, "Used": 11264299008}"Disk": {"C:\": {"Total": 511176601600, "Available": 349753446400}, "D:\": {"Total": 0, "Available": 0}}}   
+[2025-02-09 20:29:49.208] [info] System info displayed successfully.
+[2025-02-09 20:29:49.208] [info] Fetching CPU info...
+CPU Info: "Model": "Windows CPU", "Cores": 12, "Usage": -nan(ind)
+[2025-02-09 20:29:49.209] [info] CPU info displayed successfully.
+[2025-02-09 20:29:49.209] [info] Fetching memory info...
+Memory Info: "Total": 16539570176, "Used": 11264323584
+[2025-02-09 20:29:49.209] [info] Memory info displayed successfully.
+[2025-02-09 20:29:49.210] [info] Fetching Disk info...
+Disk Info: {"C:\": {"Total": 511176601600, "Available": 349753446400}, "D:\": {"Total": 0, "Available": 0}}
+[2025-02-09 20:29:49.210] [info] Disk info displayed successfully.
 ```
 
 ## 라이선스
