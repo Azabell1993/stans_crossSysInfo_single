@@ -15,6 +15,7 @@
 #include <sys/sysctl.h>
 #include <mach/mach.h>
 #include <mach/host_info.h>
+#include <sys/statvfs.h>
 #endif
 
 std::string EdgeClient::getCPUInfo() {
@@ -28,6 +29,19 @@ std::string EdgeClient::getCPUInfo() {
     GetSystemInfo(&sysInfo);
     cpuCores = sysInfo.dwNumberOfProcessors;
     modelName = "Windows CPU";
+
+    FILETIME idleTime, kernelTime, userTime;
+    if (GetSystemTimes(&idleTime, &kernelTime, &userTime)) {
+        ULARGE_INTEGER idle, kernel, user;
+        idle.LowPart = idleTime.dwLowDateTime; idle.HighPart = idleTime.dwHighDateTime;
+        kernel.LowPart = kernelTime.dwLowDateTime; kernel.HighPart = kernelTime.dwHighDateTime;
+        user.LowPart = userTime.dwLowDateTime; user.HighPart = userTime.dwHighDateTime;
+
+        static ULARGE_INTEGER prevIdle = idle, prevKernel = kernel, prevUser = user;
+        cpuUsage = 100.0 * (1.0 - (double)(idle.QuadPart - prevIdle.QuadPart) /
+                            (kernel.QuadPart + user.QuadPart - prevKernel.QuadPart - prevUser.QuadPart));
+        prevIdle = idle; prevKernel = kernel; prevUser = user;
+    }
 #elif __linux__
     std::ifstream cpuinfo("/proc/cpuinfo");
     std::string line;
@@ -42,6 +56,22 @@ std::string EdgeClient::getCPUInfo() {
             cpuCores++;
         }
     }
+
+    std::ifstream statfile("/proc/stat");
+    unsigned long long user, nice, system, idle, iowait, irq, softirq, steal;
+    statfile >> line >> user >> nice >> system >> idle >> iowait >> irq >> softirq >> steal;
+    unsigned long long totalIdle = idle + iowait;
+    unsigned long long totalCpu = user + nice + system + idle + iowait + irq + softirq + steal;
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+
+    std::ifstream statfile2("/proc/stat");
+    unsigned long long user2, nice2, system2, idle2, iowait2, irq2, softirq2, steal2;
+    statfile2 >> line >> user2 >> nice2 >> system2 >> idle2 >> iowait2 >> irq2 >> softirq2 >> steal2;
+    unsigned long long totalIdle2 = idle2 + iowait2;
+    unsigned long long totalCpu2 = user2 + nice2 + system2 + idle2 + iowait2 + irq2 + softirq2 + steal2;
+
+    cpuUsage = (1.0 - (double)(totalIdle2 - totalIdle) / (totalCpu2 - totalCpu)) * 100.0;
 #elif __APPLE__
     char buffer[128];
     size_t bufferSize = sizeof(buffer);
@@ -51,6 +81,19 @@ std::string EdgeClient::getCPUInfo() {
     size_t coreSize = sizeof(coreCount);
     sysctlbyname("hw.logicalcpu", &coreCount, &coreSize, NULL, 0);
     cpuCores = coreCount;
+
+    // macOS CPU 사용량 계산
+    host_cpu_load_info_data_t cpuLoad;
+    mach_msg_type_number_t count = HOST_CPU_LOAD_INFO_COUNT;
+    if (host_statistics(mach_host_self(), HOST_CPU_LOAD_INFO, (host_info_t)&cpuLoad, &count) == KERN_SUCCESS)
+    {
+        unsigned long long totalTicks = cpuLoad.cpu_ticks[CPU_STATE_USER] +
+                                        cpuLoad.cpu_ticks[CPU_STATE_SYSTEM] +
+                                        cpuLoad.cpu_ticks[CPU_STATE_IDLE];
+
+        unsigned long long usedTicks = totalTicks - cpuLoad.cpu_ticks[CPU_STATE_IDLE];
+        cpuUsage = (double)usedTicks / totalTicks * 100.0;
+    }
 #endif
     
     cpuInfo << "\"Model\": \"" << modelName << "\", ";
@@ -79,11 +122,18 @@ std::string EdgeClient::getMemoryInfo() {
     size_t memSizeLen = sizeof(memSize);
     sysctlbyname("hw.memsize", &memSize, &memSizeLen, NULL, 0);
     totalMemory = memSize;
-    
+
     vm_statistics64_data_t vmStat;
-    mach_msg_type_number_t count = HOST_VM_INFO_COUNT;
-    if (host_statistics(mach_host_self(), HOST_VM_INFO, (host_info_t)&vmStat, &count) == KERN_SUCCESS) {
-        usedMemory = totalMemory - (vmStat.free_count * sysconf(_SC_PAGESIZE));
+    mach_msg_type_number_t count = sizeof(vmStat) / sizeof(integer_t);
+
+    vm_size_t pageSize;
+    host_page_size(mach_host_self(), &pageSize);
+
+    if (host_statistics64(mach_host_self(), HOST_VM_INFO64, (host_info_t)&vmStat, &count) != KERN_SUCCESS) {
+        std::cerr << "Error: host_statistics64() failed to retrieve memory info." << std::endl;
+    } else {
+        // macOS에서는 free memory 외에도 wired, active, inactive memory를 사용된 메모리로 포함해야 한다.
+        usedMemory = (vmStat.active_count + vmStat.inactive_count + vmStat.wire_count) * pageSize;
     }
 #endif
 
