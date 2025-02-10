@@ -7,7 +7,7 @@ CrossSysInfo는 Windows와 Linux를 지원하는 크로스플랫폼 시스템 �
 - `Linux`
 - `MacOS`
 
-## 빌드 결과물 참조(MacOS)
+## 결과물부터 보기(MacOS)
 - CMake는 (`MacOS`, `Linux`, `Window`) 공통으로 제공
 https://github.com/Azabell1993/stans_crossSysInfo_single/blob/2a6c87ab76e6a2e1e407f65c988936d8de2ca420/CMakeLists.txt#L1-L72
 
@@ -25,6 +25,9 @@ https://github.com/Azabell1993/stans_crossSysInfo_single/blob/2a6c87ab76e6a2e1e4
 
 - `Sample.cpp`
 https://github.com/Azabell1993/stans_crossSysInfo_single/blob/2a6c87ab76e6a2e1e407f65c988936d8de2ca420/utility/Sample.cpp#L1-L80  
+
+## utility 하위의 lib에는 각 운영체제 아키텍처별 컴파일된 결과물이 표시되어있음. (스크립트에 통합으로 빌드되나, 별도로 라이브러리 표시)
+<img width="466" alt="스크린샷 2025-02-10 오후 12 13 56" src="https://github.com/user-attachments/assets/3bd59eb6-795d-4219-b2ea-bdaa18e66888" />  
 
 ## 로직 요약 설명
 주어진 `EdgeClient` 클래스는 Windows, Linux, macOS에서 시스템 정보를 수집하여 JSON 형식으로 반환하는 기능을 제공합니다. 각 운영체제별로 CPU, 메모리, 디스크 정보를 수집하는 방법은 다음과 같습니다.
