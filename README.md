@@ -1,12 +1,30 @@
 ﻿# 시스템 정보 수집기
  ![image](https://github.com/user-attachments/assets/ea034595-8fe5-4b48-9cca-ab60727ad1bc)  
 
-
 ## 개요
 CrossSysInfo는 Windows와 Linux를 지원하는 크로스플랫폼 시스템 정보 수집 도구입니다. CPU, 메모리 및 디스크 사용량에 대한 정보를 수집하여 출력하며, 각 플랫폼에 맞는 빌드 스크립트를 제공합니다.
 - `Window`
 - `Linux`
 - `MacOS`
+
+## 빌드 결과물 참조(MacOS)
+- CMake는 (`MacOS`, `Linux`, `Window`) 공통으로 제공
+https://github.com/Azabell1993/stans_crossSysInfo_single/blob/2a6c87ab76e6a2e1e407f65c988936d8de2ca420/CMakeLists.txt#L1-L72
+
+- 제공되는 빌드 스크립트 중 아키텍처 별 컴파일 부분(case by MacOS)
+https://github.com/Azabell1993/stans_crossSysInfo_single/blob/2a6c87ab76e6a2e1e407f65c988936d8de2ca420/mac_build.sh#L27-L40
+
+- 빌드
+<img width="815" alt="스크린샷 2025-02-10 오전 10 01 37" src="https://github.com/user-attachments/assets/a09278c2-8ffb-4d10-ab38-fef41e02a7ea" />
+
+- 생성된 결과물(리눅스, 윈도우도 운영체제별 아키텍처에 맞게 생성이 됩니다.)
+<img width="271" alt="스크린샷 2025-02-10 오전 10 04 38" src="https://github.com/user-attachments/assets/b7307a7f-ff1c-42cd-8740-154381f0de06" />
+
+- 결과 출력(`./Sample`)
+<img width="1269" alt="스크린샷 2025-02-10 오전 10 01 55" src="https://github.com/user-attachments/assets/a0298575-ffe6-486e-b913-bc3ea0cf0f66" />  
+
+- `Sample.cpp`
+https://github.com/Azabell1993/stans_crossSysInfo_single/blob/2a6c87ab76e6a2e1e407f65c988936d8de2ca420/utility/Sample.cpp#L1-L80  
 
 ## 로직 요약 설명
 주어진 `EdgeClient` 클래스는 Windows, Linux, macOS에서 시스템 정보를 수집하여 JSON 형식으로 반환하는 기능을 제공합니다. 각 운영체제별로 CPU, 메모리, 디스크 정보를 수집하는 방법은 다음과 같습니다.
