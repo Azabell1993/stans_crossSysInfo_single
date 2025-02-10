@@ -159,9 +159,9 @@ Disk Info: {"/": {"Total": 1081101176832, "Available": 1017010249728}, "/home": 
 ./mac_build.sh
 ```
 빌드가 완료되면 'macos_result/output/' 디렉터리에 다음 파일들이 생성됩니다.
-- 'libEdgeClient.a'
-- 'libEdgeClient.dylib'
-- 'Sample'
+- `libEdgeClient.a`
+- `libEdgeClient.dylib`
+- `Sample`
 
 #### 실행
 ``` sh

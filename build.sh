@@ -21,19 +21,19 @@ SAMPLE_EXE="$OUTPUT_DIR/Sample"
 INCLUDE_FLAGS="-I$SRC_DIR"
 LIB_FLAGS="-L/usr/lib/x86_64-linux-gnu -lfmt -lspdlog -pthread"
 
-# Create result directories
+# 결과 디렉터리 생성
 mkdir -p "$RESULT_DIR" "$BUILD_DIR" "$OUTPUT_DIR"
 
-# 1. Compile EdgeClient.cpp (for static & shared libraries)
+# 1. EdgeClient.cpp 컴파일 (정적 및 공유 라이브러리를 위한 객체 파일 생성)
 g++ -std=c++20 -Wall -Wextra -O2 -fPIC -D_GLIBCXX_USE_CXX11_ABI=1 $INCLUDE_FLAGS -c "$SRC_FILES" -o "$OBJ_FILE"
 
-# 2. Create static library
+# 2. 정적 라이브러리 생성
 ar rcs "$STATIC_LIB" "$OBJ_FILE"
 
-# 3. Create shared library
+# 3. 공유 라이브러리 생성
 g++ -shared -o "$SHARED_LIB" "$OBJ_FILE"
 
-# 4. Compile and link Sample executable
+# 4. 샘플 실행 파일 컴파일 및 링크
 g++ -std=c++20 -Wall -Wextra -O2 -D_GLIBCXX_USE_CXX11_ABI=1 $INCLUDE_FLAGS -c "$SAMPLE_SRC" -o "$SAMPLE_OBJ"
 g++ -std=c++20 -Wall -Wextra -O2 -o "$SAMPLE_EXE" "$SAMPLE_OBJ" "$STATIC_LIB" $LIB_FLAGS
 
