@@ -1,5 +1,5 @@
 /**
- * EdgeClient System Information Retrieval Libaray
+ * EdgeClient System Information Retrieval Library
  * 
  * @file EdgeClient.cpp
  * @brief 이 파일은 다양한 운영체제에서 시스템 정보를 수집하는 기능을 제공하는 클래스 EdgeClient의 구현부입니다.
